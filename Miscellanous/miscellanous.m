@@ -14,8 +14,25 @@ outputs = getOutputs(rt);
 hasIt = checkStateContainsVariable(states(1),outputs(1));
 variablesInState = getVariablesInState(getOutputs(rt),states(1));
 
-done = numericalReplacementOfVariableInState(states(1),outputs(1))
+done = numericalReplacementOfVariableInState(states(1),outputs(1));
 %done = replacementOfTransitionSource(transitions(2),states);
+
+a = isInitialTransition(transitions(3));
+replaceInitialTransition(transitions,states);
+
+function done = replaceInitialTransition(transitions,states)
+    done = false;
+    for ii=1:size(transitions,1)
+       if isInitialTransition(transitions(ii))
+           done = replacementOfTransitionDestination(transitions(ii),states);
+       end
+    end
+
+end
+
+function is = isInitialTransition(tran)
+    is = isa(tran.Source,'Stateflow.State')==false;
+end
 
 function done = replacementOfTransitionDestination(trans,states)
     done = false;
