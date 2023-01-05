@@ -19,6 +19,7 @@ done = numericalReplacementOfVariableInState(states(1),outputs(1));
 
 a = isInitialTransition(transitions(3));
 replaceInitialTransition(transitions,states);
+b = replacementOfTransitionSource(transitions(1),states);
 
 function done = replaceInitialTransition(transitions,states)
     done = false;
@@ -52,7 +53,7 @@ end
 
 function done = replacementOfTransitionSource(trans,states)
     done = false;
-    if size(states,1)>1
+    if size(states,1)>1 && isInitialTransition(trans) == false
         stateSame = true;
         while stateSame
             newSourceState = randi([1 size(states,1)]);
