@@ -11,8 +11,12 @@ transitions = getTransitions(rt);%find(rt,'-isa','Stateflow.Transition');
 data = find(rt,'-isa','Stateflow.Data');
 inputs = getInputs(rt);
 outputs = getOutputs(rt);
+
+done = insertVariableInState(states(1),outputs(1));
 hasIt = checkStateContainsVariable(states(1),outputs(1));
 variablesInState = getVariablesInState(getOutputs(rt),states(1));
+
+done = changeAssignation(states(1));
 
 done = numericalReplacementOfVariableInState(states(1),outputs(1));
 %done = replacementOfTransitionSource(transitions(2),states);
@@ -20,6 +24,75 @@ done = numericalReplacementOfVariableInState(states(1),outputs(1));
 a = isInitialTransition(transitions(3));
 replaceInitialTransition(transitions,states);
 b = replacementOfTransitionSource(transitions(1),states);
+
+
+function done = insertVariableInState(state,output)
+    done = false;
+    if(contains(state.Label,output.Name)==false)
+        str = convertCharsToStrings(state.Label);
+        selectVal = rand;
+        if selectVal < 0.4
+            str = str + newline + output.Name + '=' + num2str(0) + ';';
+        elseif selectVal < 0.8
+            str = str + newline + output.Name + '=' + num2str(1) + ';';
+        else
+            str = str + newline + output.Name + '=' + num2str(randi([0 50])) + ';'; % pulir esto
+        end
+        state.Label = str;
+        done = true;
+    end
+end
+
+function done = changeAssignation(state)
+    done = false;
+    if contains(state.Label,'entry:')
+        done = true;
+        if rand <0.8
+            %change entry for during
+            str = convertCharsToStrings(state.Label);
+            newStr = strrep(str,'entry','during');
+            state.Label = newStr;
+            
+        else
+           %change entry for exit--exit is less used, this is why less prob.
+           str = convertCharsToStrings(state.Label);
+           newStr = strrep(str,'entry','exit');
+           state.Label = newStr;
+        end
+        
+    elseif contains(state.Label,'during:')
+        done = true;
+        if rand <0.8
+            %change entry for entry
+            str = convertCharsToStrings(state.Label);
+            newStr = strrep(str,'during','entry');
+            state.Label = newStr;
+            
+        else
+           %change entry for exit--exit is less used, this is why less prob. 
+           str = convertCharsToStrings(state.Label);
+           newStr = strrep(str,'during','exit');
+           state.Label = newStr;
+            
+        end
+        
+    elseif contains(state.Label,'exit:')
+        done = true;
+        if rand <=0.5
+            %change exit for during
+           str = convertCharsToStrings(state.Label);
+           newStr = strrep(str,'exit','during');
+           state.Label = newStr;
+        else
+           % change exit for entry
+           str = convertCharsToStrings(state.Label);
+           newStr = strrep(str,'exit','entry');
+           state.Label = newStr;
+        end
+        
+    end
+    
+end
 
 function done = replaceInitialTransition(transitions,states)
     done = false;
