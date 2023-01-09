@@ -11,7 +11,7 @@ transitions = getTransitions(rt);%find(rt,'-isa','Stateflow.Transition');
 data = find(rt,'-isa','Stateflow.Data');
 inputs = getInputs(rt);
 outputs = getOutputs(rt);
-done = replaceMathematicalOperatorInTransition(transitions(2));
+done = replaceSecMsecInAfter(transitions(2));
 
 done = replaceConditionalOperator(transitions(2));
 
@@ -27,6 +27,29 @@ done = numericalReplacementOfVariableInState(states(1),outputs(1));
 a = isInitialTransition(transitions(3));
 replaceInitialTransition(transitions,states);
 b = replacementOfTransitionSource(transitions(1),states);
+
+function done = replaceSecMsecInAfter(transition)
+    %TODO: All changes when more than one after in a transition. Could be
+    %problematic, although this case is quite rare.
+    done = false;
+    str = convertCharsToStrings(transition.LabelString);
+    if isInitialTransition(transition)==false && contains(str,'after')
+        secLocations = strfind(str, 'sec');
+        whichToChange = randi([1 length(secLocations)]);
+        if strcmp(transition.LabelString(secLocations(whichToChange)-1), 'm')
+            newStr = strrep(str,'msec','sec');
+            transition.LabelString = newStr;
+            done = true;
+        else
+            newStr = strrep(str,'sec','msec');
+            transition.LabelString = newStr;
+            done = true;
+        end
+        
+    end
+
+end
+
 
 function done = replaceMathematicalOperatorInTransition(transition)
     done = false;
