@@ -56,32 +56,38 @@ function done = relationalOperatorReplacement(transition)
         
         if contains(splitedCond(whichCond),'==')
             selectedOperator = randi(4);
-            operators = {'<=','>=','<','>'}; 
+            operators = {'<=','>=','<','>','~='}; 
             newStr = strrep(splitedCond(whichCond),'==',operators{selectedOperator});
             transition.LabelString = strrep(transition.LabelString,splitedCond(whichCond),newStr);
             done = true;
         elseif contains(splitedCond(whichCond),'<=')
             selectedOperator = randi(4);
-            operators = {'==','>=','<','>'}; 
+            operators = {'==','>=','<','>','~='}; 
             newStr = strrep(splitedCond(whichCond),'<=',operators{selectedOperator});
             transition.LabelString = strrep(transition.LabelString,splitedCond(whichCond),newStr);
             done = true;
         elseif contains(splitedCond(whichCond),'>=')
             selectedOperator = randi(4);
-            operators = {'<=','==','<','>'}; 
+            operators = {'<=','==','<','>','~='}; 
             newStr = strrep(splitedCond(whichCond),'>=',operators{selectedOperator});
             transition.LabelString = strrep(transition.LabelString,splitedCond(whichCond),newStr);
             done = true;
         elseif contains(splitedCond(whichCond),'<')
             selectedOperator = randi(4);
-            operators = {'<=','>=','<=','>'}; 
+            operators = {'<=','>=','<=','>','~='}; 
             newStr = strrep(splitedCond(whichCond),'<',operators{selectedOperator});
             transition.LabelString = strrep(transition.LabelString,splitedCond(whichCond),newStr);
             done = true;
         elseif contains(splitedCond(whichCond),'>')
             selectedOperator = randi(4);
-            operators = {'<=','>=','<','=='}; 
+            operators = {'<=','>=','<','==','~='}; 
             newStr = strrep(splitedCond(whichCond),'>',operators{selectedOperator});
+            transition.LabelString = strrep(transition.LabelString,splitedCond(whichCond),newStr);
+            done = true;
+        elseif contains(splitedCond(whichCond),'~=')
+            selectedOperator = randi(4);
+            operators = {'<=','>=','<','==','>'}; 
+            newStr = strrep(splitedCond(whichCond),'~=',operators{selectedOperator});
             transition.LabelString = strrep(transition.LabelString,splitedCond(whichCond),newStr);
             done = true;
         end
