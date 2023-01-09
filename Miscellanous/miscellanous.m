@@ -31,7 +31,7 @@ b = replacementOfTransitionSource(transitions(1),states);
 function done = relationalOperatorReplacement(transition)
     done = false;
     str = convertCharsToStrings(transition.LabelString);
-    if contains(str,'==') || contains(str,'<') || contains(str,'>') 
+    if contains(str,'==') || contains(str,'<') || contains(str,'>') || contains(str,'~=')
         numOfConditions = 1;
 %         if contains(str,'&&') || contains(str,'||')
 %             numOfConditions = length(strfind(str, '&&')) + length(strfind(str, '||'))+1;
@@ -49,6 +49,7 @@ function done = relationalOperatorReplacement(transition)
         %select conditoin to mutate
         whichCond = randi([1, numOfConditions]);
         while contains(splitedCond(whichCond),'==')==false...
+              && contains(splitedCond(whichCond,'~=')==false...
               && contains(splitedCond(whichCond),'<')==false ...
               && contains(splitedCond(whichCond),'>')==false 
             whichCond = randi([1, numOfConditions]);
