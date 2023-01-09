@@ -11,7 +11,7 @@ transitions = getTransitions(rt);%find(rt,'-isa','Stateflow.Transition');
 data = find(rt,'-isa','Stateflow.Data');
 inputs = getInputs(rt);
 outputs = getOutputs(rt);
-done = replaceSecMsecInAfter(transitions(2));
+done = relationalOperatorReplacement(transitions(2));
 
 done = replaceConditionalOperator(transitions(2));
 
@@ -27,6 +27,71 @@ done = numericalReplacementOfVariableInState(states(1),outputs(1));
 a = isInitialTransition(transitions(3));
 replaceInitialTransition(transitions,states);
 b = replacementOfTransitionSource(transitions(1),states);
+
+function done = relationalOperatorReplacement(transition)
+    done = false;
+    str = convertCharsToStrings(transition.LabelString);
+    if contains(str,'==') || contains(str,'<') || contains(str,'>') 
+        numOfConditions = 1;
+%         if contains(str,'&&') || contains(str,'||')
+%             numOfConditions = length(strfind(str, '&&')) + length(strfind(str, '||'))+1;
+%         end
+        
+        conditionsSeparatedByAnd =  split(str,'&&');
+        %numsOfConditionsProcessed = 0;
+        for ii=1:length(conditionsSeparatedByAnd)
+            strSplitByOr = split(conditionsSeparatedByAnd(ii),'||');
+            for jj=1:length(strSplitByOr)
+               numOfConditions = numOfConditions+1;
+               splitedCond(numOfConditions) = strSplitByOr(jj);
+            end   
+        end
+        %select conditoin to mutate
+        whichCond = randi([1, numOfConditions]);
+        while contains(splitedCond(whichCond),'==')==false...
+              && contains(splitedCond(whichCond),'<')==false ...
+              && contains(splitedCond(whichCond),'>')==false 
+            whichCond = randi([1, numOfConditions]);
+        end
+        
+        if contains(splitedCond(whichCond),'==')
+            selectedOperator = randi(4);
+            operators = {'<=','>=','<','>'}; 
+            newStr = strrep(splitedCond(whichCond),'==',operators{selectedOperator});
+            transition.LabelString = strrep(transition.LabelString,splitedCond(whichCond),newStr);
+            done = true;
+        elseif contains(splitedCond(whichCond),'<=')
+            selectedOperator = randi(4);
+            operators = {'==','>=','<','>'}; 
+            newStr = strrep(splitedCond(whichCond),'<=',operators{selectedOperator});
+            transition.LabelString = strrep(transition.LabelString,splitedCond(whichCond),newStr);
+            done = true;
+        elseif contains(splitedCond(whichCond),'>=')
+            selectedOperator = randi(4);
+            operators = {'<=','==','<','>'}; 
+            newStr = strrep(splitedCond(whichCond),'>=',operators{selectedOperator});
+            transition.LabelString = strrep(transition.LabelString,splitedCond(whichCond),newStr);
+            done = true;
+        elseif contains(splitedCond(whichCond),'<')
+            selectedOperator = randi(4);
+            operators = {'<=','>=','<=','>'}; 
+            newStr = strrep(splitedCond(whichCond),'<',operators{selectedOperator});
+            transition.LabelString = strrep(transition.LabelString,splitedCond(whichCond),newStr);
+            done = true;
+        elseif contains(splitedCond(whichCond),'>')
+            selectedOperator = randi(4);
+            operators = {'<=','>=','<','=='}; 
+            newStr = strrep(splitedCond(whichCond),'>',operators{selectedOperator});
+            transition.LabelString = strrep(transition.LabelString,splitedCond(whichCond),newStr);
+            done = true;
+        end
+        
+       
+    end
+   
+
+
+end
 
 function done = replaceSecMsecInAfter(transition)
     %TODO: All changes when more than one after in a transition. Could be
