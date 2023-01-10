@@ -11,6 +11,9 @@ transitions = getTransitions(rt);%find(rt,'-isa','Stateflow.Transition');
 data = find(rt,'-isa','Stateflow.Data');
 inputs = getInputs(rt);
 outputs = getOutputs(rt);
+%done = deleteState(states(4),transitions, states);
+done = insertMathematicalOperation(states(1),rt);
+done = deleteState(states(4),transitions, states);
 done = numericalChangeInTransition(transitions(2));
 done = relationalOperatorReplacement(transitions(2));
 
@@ -28,6 +31,63 @@ done = numericalReplacementOfVariableInState(states(1),outputs(1));
 a = isInitialTransition(transitions(3));
 replaceInitialTransition(transitions,states);
 b = replacementOfTransitionSource(transitions(1),states);
+
+function done = insertMathematicalOperation(state,rt)
+    %TODO: Right now limited to include simple operations at the end of
+    %statement. Could be extended for 1) including right after a variable,
+    % 2) including data inside the operator, etc.
+    done = false;
+    chr = state.Label;
+    str = convertCharsToStrings(state.Label);
+    if contains(str,'=') && contains(str,';')
+        locations = strfind(str,';');
+        choosedLocation = locations(randi([1 length(locations)]));
+        %select operator
+        operator = ['+','-','*','/'];
+        op = randi(4);
+        selectedOperator = operator(op);
+        
+        
+        newChr = chr(1:choosedLocation-1);
+        newChr = [newChr selectedOperator num2str(randi(20)) ';'];
+        newChr = [newChr chr(choosedLocation+1:length(chr))];
+        state.Label = newChr;
+        done = true;
+    end
+    
+    
+end
+
+function done = deleteTransition(transition)
+    if isInitialTransition(transitions(ii))
+       done = false;
+    else
+       delete(transition);
+       done = true;
+    end
+    
+end
+
+function done = deleteState(state, transitions, states)
+    if length(states)<=1
+        done = false;
+    else
+        for ii=1:length(transitions)
+            if isInitialTransition(transitions(ii))
+                if transitions(ii).Destination ==state
+                    replacementOfTransitionDestination(transitions(ii),states);
+                end
+            elseif transitions(ii).Source==state || transitions(ii).Destination ==state
+
+               delete(transitions(ii));
+            end
+
+        end
+        delete(state);
+        done = true;
+    end
+    
+end
 
 function done = numericalChangeInTransition(transition)
     %TODO: Some times it may end a number to be --. Prune this.

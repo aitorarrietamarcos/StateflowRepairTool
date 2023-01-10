@@ -27,3 +27,9 @@ The current status is preliminary. A set of mutation operators are being impleme
 ### Action State Replacment (R):
 
 ### Variable Insertion In State (I):
+
+### Delete State (D)
+
+### Delete Transition (D)
+
+### Insert Mathematical Operator (I)
