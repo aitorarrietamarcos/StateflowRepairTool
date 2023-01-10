@@ -111,8 +111,8 @@ function done = relationalOperatorReplacement(transition)
         for ii=1:length(conditionsSeparatedByAnd)
             strSplitByOr = split(conditionsSeparatedByAnd(ii),'||');
             for jj=1:length(strSplitByOr)
-               numOfConditions = numOfConditions+1;
                splitedCond(numOfConditions) = strSplitByOr(jj);
+               numOfConditions = numOfConditions+1;
             end   
         end
         %select conditoin to mutate
