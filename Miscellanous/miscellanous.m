@@ -12,7 +12,7 @@ data = find(rt,'-isa','Stateflow.Data');
 inputs = getInputs(rt);
 outputs = getOutputs(rt);
 %done = deleteState(states(4),transitions, states);
-done = insertConditionInTransition(rt)
+done = insertConditionInTransition(transitions(1),rt)
 done = deleteVariableFromState(states(2),rt);
 done = insertMathematicalOperation(states(1),rt);
 done = deleteState(states(4),transitions, states);
@@ -34,14 +34,16 @@ a = isInitialTransition(transitions(3));
 replaceInitialTransition(transitions,states);
 b = replacementOfTransitionSource(transitions(1),states);
 
-function done = insertConditionInTransition(rt)
+
+
+function done = insertConditionInTransition(transition,rt)
     done = false;
     inputs = getInputs(rt); %up to now, limited only to inputs
-    transitions = getTransitions(rt);
-    if length(transitions)>=1
+    
+    if ~isempty(inputs)
         relationalOps = {'<=','>=','<','==','~='}; 
         conditionalOps = {'&&','||'}; 
-        selectedTrans = randi(length(transitions));
+        %selectedTrans = randi(length(transitions));
         selectedRelOp = relationalOps{randi(5)};
         selectedCondOp = conditionalOps{randi(2)};
         selectedInput = inputs(randi(length(inputs))).Name;
@@ -51,10 +53,10 @@ function done = insertConditionInTransition(rt)
             numToBeSelected = randi([-20,20]); %TODO --> POLISH THIS
         end
         newStr = [selectedCondOp ' ' selectedInput ' ' selectedRelOp ' ' num2str(numToBeSelected)];
-        chr = transitions(selectedTrans).LabelString;
+        chr = transition.LabelString;
         lastLocation = strfind(chr, ']');
         chr = [chr(1:lastLocation-1) newStr ']'];
-        transitions(selectedTrans).LabelString = chr;
+        transition.LabelString = chr;
     end
        
 end
