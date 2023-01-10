@@ -12,6 +12,7 @@ data = find(rt,'-isa','Stateflow.Data');
 inputs = getInputs(rt);
 outputs = getOutputs(rt);
 %done = deleteState(states(4),transitions, states);
+done = deleteVariableFromState(states(2),rt);
 done = insertMathematicalOperation(states(1),rt);
 done = deleteState(states(4),transitions, states);
 done = numericalChangeInTransition(transitions(2));
@@ -31,6 +32,37 @@ done = numericalReplacementOfVariableInState(states(1),outputs(1));
 a = isInitialTransition(transitions(3));
 replaceInitialTransition(transitions,states);
 b = replacementOfTransitionSource(transitions(1),states);
+
+function done = deleteVariableFromState(state,rt)
+    done = false;
+    outputs = getOutputs(rt);
+    %outputsInState = [];
+    numsOfOutputsInState = 0;
+    chr = state.Label;
+    if length(outputs)>1 % at least there should be 2 variables
+        for ii=1:length(outputs)
+            if contains(state.Label,outputs(ii).Name)
+                numsOfOutputsInState = numsOfOutputsInState+1;
+                outputsInState(numsOfOutputsInState).Name = outputs(ii).Name;
+                %aitor = 0;
+            end
+            
+        end
+        if numsOfOutputsInState > 2 % at least there should be 2 variables
+            outputToRemove = outputsInState(randi([1 numsOfOutputsInState])).Name;
+            idx = strfind(chr,outputToRemove);
+            chrNew = chr(1:idx-1);
+            while strcmp(chr(idx),';')==false && idx<length(chr)
+               idx=idx+1; 
+            end
+            chrNew = [chrNew chr(idx+1:length(chr))];
+            state.Label = chrNew;
+            done = true;
+        end
+        
+    end
+
+end
 
 function done = insertMathematicalOperation(state,rt)
     %TODO: Right now limited to include simple operations at the end of
