@@ -1,5 +1,5 @@
 function done = deleteTransition(transition)
-    if isInitialTransition(transitions(ii))
+    if isInitialTransition(transition)
        done = false;
     else
        delete(transition);
