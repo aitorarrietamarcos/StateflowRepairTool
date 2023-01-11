@@ -35,6 +35,7 @@ a = isInitialTransition(transitions(3));
 replaceInitialTransition(transitions,states);
 b = replacementOfTransitionSource(transitions(1),states);
 
+
 function done = deleteConditionFromTransition(transition)
     done = false;
     chr = transition.LabelString;
@@ -63,7 +64,7 @@ function done = deleteConditionFromTransition(transition)
                chrNew = chr(1:locations(loc)-1);
                chrNew = [chrNew chr(locations(loc+1):length(chr))];
                transition.LabelString = chrNew;
-                done = true;
+               done = true;
            else
                chrNew = chr(1:locations(loc-1)+1);
                chrNew = [chrNew chr(locations(loc)+2:length(chr))];
@@ -78,6 +79,7 @@ function done = deleteConditionFromTransition(transition)
 end
 
 function done = insertConditionInTransition(transition,rt)
+    %TODO: Add it at a random point in the transition?
     done = false;
     inputs = getInputs(rt); %up to now, limited only to inputs
     
@@ -183,12 +185,10 @@ function done = deleteState(state, transitions, states)
 
                delete(transitions(ii));
             end
-
         end
         delete(state);
         done = true;
-    end
-    
+    end    
 end
 
 function done = numericalChangeInTransition(transition)
@@ -256,7 +256,6 @@ function isNum = isNumber(str,charNum)
             isNum=true;
         end
     end
-
 end
 
 function done = relationalOperatorReplacement(transition)
