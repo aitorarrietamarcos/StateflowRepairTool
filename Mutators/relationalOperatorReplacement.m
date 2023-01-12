@@ -10,11 +10,16 @@ function done = relationalOperatorReplacement(transition)
         conditionsSeparatedByAnd =  split(str,'&&');
         %numsOfConditionsProcessed = 0;
         for ii=1:length(conditionsSeparatedByAnd)
-            strSplitByOr = split(conditionsSeparatedByAnd(ii),'||');
-            for jj=1:length(strSplitByOr)
-               splitedCond(numOfConditions) = strSplitByOr(jj);
-               numOfConditions = numOfConditions+1;
-            end   
+            if contains(conditionsSeparatedByAnd,'||')
+                strSplitByOr = split(conditionsSeparatedByAnd(ii),'||');
+                for jj=1:length(strSplitByOr)
+                    splitedCond(numOfConditions) = strSplitByOr(jj);
+                    numOfConditions = numOfConditions+1;
+                end 
+            else
+               splitedCond(numOfConditions) =  conditionsSeparatedByAnd(ii);
+            end
+              
         end
         %select conditoin to mutate
         whichCond = randi([1, numOfConditions]);

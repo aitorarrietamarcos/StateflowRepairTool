@@ -39,3 +39,7 @@ The current status is preliminary. A set of mutation operators are being impleme
 ### Variable Insertion In State (I):
 
 ### Insert New Condition (I):
+
+## Current identified problems:
+
+* The mutator generates some times after(0,sec), which is non-compilable.

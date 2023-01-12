@@ -3,7 +3,7 @@ function done = insertConditionInTransition(transition,rt)
     done = false;
     inputs = getInputs(rt); %up to now, limited only to inputs
     
-    if ~isempty(inputs) || ~isInitialTransition(transition)
+    if ~isempty(inputs) && ~isInitialTransition(transition)
         relationalOps = {'<=','>=','<','==','~='}; 
         conditionalOps = {'&&','||'}; 
         %selectedTrans = randi(length(transitions));

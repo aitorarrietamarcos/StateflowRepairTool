@@ -21,49 +21,90 @@ function done = applyMutations()
     rt = sfroot;
     while rand<0.5^numOfMutationsDone
         done = false;
-        try
-            while done == false
-                states = getStates(rt);
-                transitions = getTransitions(rt);
-                statesOrTransitions = 0;%randi([0,1]);
-                if statesOrTransitions==1
-                      %choose a state
-                    chosenState = randi([1,length(states)]);
-                else
-                %choose a transition
-                chosenTrans = transitions(randi([1,length(transitions)]));
-                %transitions(chosenTrans);
-                selectedOperator = randi([1,11]);
-                if selectedOperator==1
+        
+    while done == false
+        states = getStates(rt);
+        transitions = getTransitions(rt);
+        statesOrTransitions = 0;%randi([0,1]);
+        if statesOrTransitions==1
+              %choose a state
+            chosenState = randi([1,length(states)]);
+        else
+            %choose a transition
+            chosenTrans = transitions(randi([1,length(transitions)]));
+            %transitions(chosenTrans);
+            selectedOperator = randi([1,11]);
+            if selectedOperator==1
+                try 
                     done = deleteConditionFromTransition(chosenTrans);
-                elseif selectedOperator==2
-                    done = insertConditionInTransition(chosenTrans,rt);
-                elseif selectedOperator==3
-                    done = deleteTransition(chosenTrans);
-                elseif selectedOperator==4
-                    done = numericalChangeInTransition(chosenTrans);
-                elseif selectedOperator==5
-                    done = relationalOperatorReplacement(chosenTrans);
-                elseif selectedOperator==6
-                    done = replaceSecMsecInAfter(chosenTrans);     
-                elseif selectedOperator==7
-                    done = replaceMathematicalOperatorInTransition(chosenTrans);
-                elseif selectedOperator==8
-                   done = replaceConditionalOperator(chosenTrans); 
-                elseif selectedOperator==9
-                   done = replaceInitialTransition(transitions,states); 
-                elseif selectedOperator==10
-                   done = replacementOfTransitionDestination(chosenTrans,states);
-                elseif selectedOperator ==11
-                    done = replacementOfTransitionSource(chosenTrans,states);
+                catch
+                    disp('Problem when generating mutation');
                 end
-                    
+            elseif selectedOperator==2
+                try
+                    done = insertConditionInTransition(chosenTrans,rt);
+                catch
+                    disp('Problem when generating mutation');
+                end
+            elseif selectedOperator==3
+                try
+                    done = deleteTransition(chosenTrans);
+                catch
+                    disp('Problem when generating mutation');
+                end
+            elseif selectedOperator==4
+                try
+                    done = numericalChangeInTransition(chosenTrans);
+                catch
+                    disp('Problem when generating mutation');%bug (reproduced after mutation 32)
+                end
+            elseif selectedOperator==5
+                try
+                    done = relationalOperatorReplacement(chosenTrans); % potential bug (reproduced after mutation 14); looks like it comes from another place
+                catch
+                    disp('Problem when generating mutation');
+                end
+            elseif selectedOperator==6
+                try
+                    done = replaceSecMsecInAfter(chosenTrans);
+                catch
+                    disp('Problem when generating mutation');
+                end
+            elseif selectedOperator==7
+                try
+                    done = replaceMathematicalOperatorInTransition(chosenTrans);
+                catch
+                    disp('Problem when generating mutation');
+                end
+            elseif selectedOperator==8
+               try
+                    done = replaceConditionalOperator(chosenTrans);
+               catch
+                    disp('Problem when generating mutation');
+                end
+            elseif selectedOperator==9
+               try
+                    done = replaceInitialTransition(transitions,states);
+               catch
+                    disp('Problem when generating mutation');
+                end
+            elseif selectedOperator==10
+               try
+                    done = replacementOfTransitionDestination(chosenTrans,states);
+               catch
+                    disp('Problem when generating mutation');
+                end
+            elseif selectedOperator ==11
+                try
+                    done = replacementOfTransitionSource(chosenTrans,states);
+                catch
+                    disp('Problem when generating mutation');
                 end
             end
-        catch
-            disp('problem');
+
         end
-        
+    end
+              
         
         numOfMutationsDone = numOfMutationsDone+1;
     end
