@@ -3,7 +3,7 @@ clc;
 rng(0);%to debug
 name = 'simpleStateflowModel';
 
-budget = 50;
+budget = 100;
 totalMutants = 0;
 while totalMutants<budget
    totalMutants=totalMutants+1;
@@ -25,10 +25,54 @@ function done = applyMutations()
     while done == false
         states = getStates(rt);
         transitions = getTransitions(rt);
-        statesOrTransitions = 0;%randi([0,1]);
+        statesOrTransitions = 1;%randi([0,1]);
         if statesOrTransitions==1
               %choose a state
-            chosenState = randi([1,length(states)]);
+            chosenState = states(randi([1,length(states)]));
+            %chosenTrans = transitions(randi([1,length(transitions)]));
+             selectedOperator = randi([1,6]);
+            if selectedOperator==1
+                try 
+                    done = deleteVariableFromState(chosenState,rt);
+                catch
+                    disp('Problem when generating mutation');
+                end
+            elseif selectedOperator==2
+                try 
+                    done = insertMathematicalOperation(chosenState);
+                catch
+                    disp('Problem when generating mutation');
+                end
+            elseif selectedOperator==3
+                try 
+                    done = deleteVariableFromState(chosenState,rt);
+                catch
+                    disp('Problem when generating mutation');
+                end
+            elseif selectedOperator==4
+                try 
+                    done = deleteState(chosenState,transitions,states);
+                catch
+                    disp('Problem when generating mutation');
+                end
+            elseif selectedOperator==5
+                try 
+                    outputs = getOutputs(rt);
+                    
+                    done = insertVariableInState(chosenState,outputs(randi(randi([1,length(outputs)]))));
+                catch
+                    disp('Problem when generating mutation');
+                end
+            elseif selectedOperator==6
+                try 
+                    done = changeAssignation(chosenState);
+                catch
+                    disp('Problem when generating mutation'); % buggi tiene pinta
+                end
+            end
+                
+                
+                
         else
             %choose a transition
             chosenTrans = transitions(randi([1,length(transitions)]));
