@@ -25,7 +25,7 @@ function done = applyMutations()
     while done == false
         states = getStates(rt);
         transitions = getTransitions(rt);
-        statesOrTransitions = 1;%randi([0,1]);
+        statesOrTransitions = randi([1,2]);
         if statesOrTransitions==1
               %choose a state
             chosenState = states(randi([1,length(states)]));
