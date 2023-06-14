@@ -11,7 +11,7 @@ bdclose(nonFaultyModel);
 bdclose(faultyModel);
 
 numOfIterations = 0;
-budget = 100;
+budget = 10000;
 
 numsOfSolsInArchive = 1;
 Archive{numsOfSolsInArchive}.modelName = faultyModel;
@@ -67,7 +67,7 @@ while numOfIterations<budget && ~plausiblePatchFound
 end
 
 
-function done = applyMutations()
+function [done, statesOrTransitions, stateNum, transNum]= applyMutations()
     numOfMutationsDone = 0;
     rt = sfroot;
     while rand<0.5^numOfMutationsDone
@@ -77,9 +77,12 @@ function done = applyMutations()
         states = getStates(rt);
         transitions = getTransitions(rt);
         statesOrTransitions = 2;%randi([1,2]);
+        stateNum = 0;
+        transNum = 0;
         if statesOrTransitions==1
               %choose a state
-            chosenState = states(randi([1,length(states)]));
+            stateNum = randi([1,length(states)]);
+            chosenState = states(stateNum);
             %chosenTrans = transitions(randi([1,length(transitions)]));
              selectedOperator = randi([1,6]);
             if selectedOperator==1
@@ -126,7 +129,8 @@ function done = applyMutations()
                 
         else
             %choose a transition
-            chosenTrans = transitions(12);%transitions(randi([1,length(transitions)]));
+            transNum = randi([1,length(transitions)]);
+            chosenTrans = transitions(transNum);
             %transitions(chosenTrans);
             selectedOperator = randi([1,11]);
             if selectedOperator==1
