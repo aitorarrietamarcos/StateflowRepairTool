@@ -6,6 +6,10 @@ bdclose('all')
 
 faultyModel = 'ModelsWithRealFaults/pacemaker_fault1/Model1_Scenario2_Faulty_2020a';
 nonFaultyModel =  'ModelsWithRealFaults/pacemaker_fault1/Model1_Scenario2_NonFaulty_2020a';
+load('ModelsWithRealFaults/pacemaker_fault1/fl_data_states.mat');
+load('ModelsWithRealFaults/pacemaker_fault1/fl_data_transitions.mat');
+
+
 [bestVerdict,bestTimeVerdictActive,bestCriticalityVerdict,bestTimeFirstFailureExhibited] = executeTestPacemaker(nonFaultyModel,faultyModel);
 bdclose(nonFaultyModel);
 bdclose(faultyModel);
@@ -44,7 +48,7 @@ while toc<timeBudget %&& ~plausiblePatchFound
         open_system([faultyModel '_' num2str(numOfIterations) '.slx']);
         done = false;
         while done == false
-            [done, statesOrTransitions, stateNum, transNum] = applyGlobalMutations();
+            [done, statesOrTransitions, stateNum, transNum] = applyGlobalMutations(suspiciousness_transitions,suspiciousness_states);
         end
 
         save_system([faultyModel '_' num2str(numOfIterations) '.slx']);
@@ -134,6 +138,14 @@ function Archive = clearArchive(Archive)
     %TODO -> Implement function
     Archive = Archive;
 
+end
+
+function selected_index = rouletteWheelSelection(probabilities)
+    cumulative_probs = cumsum(probabilities)/sum(probabilities); % Compute cumulative probabilities
+    selection = rand(); % Generate a random number between 0 and 1
+    
+    % Perform Roulette Wheel Selection
+    selected_index = find(cumulative_probs >= selection, 1);
 end
 
 % 
@@ -320,7 +332,7 @@ function [done]= applyLocalMutations(statesOrTransitions, stateNum, transNum)
 end
 
 
-function [done, statesOrTransitions, stateNum, transNum]= applyGlobalMutations()
+function [done, statesOrTransitions, stateNum, transNum]= applyGlobalMutations(suspiciousness_transitions,suspiciousness_states)
     numOfMutationsDone = 0;
     rt = sfroot;
  %    while rand<0.5^numOfMutationsDone
@@ -329,12 +341,16 @@ function [done, statesOrTransitions, stateNum, transNum]= applyGlobalMutations()
     while done == false
         states = getStates(rt);
         transitions = getTransitions(rt);
-        statesOrTransitions = 2;%randi([1,2]);
+        statesOrTransitions = randi([1,2]);
+        
         stateNum = 0;
         transNum = 0;
         if statesOrTransitions==1
               %choose a state
-            stateNum = randi([1,length(states)]);
+            %Uncomment next if you want to do it without considering Fault
+            %Localization data
+            %stateNum = randi([1,length(states)]);
+            stateNum = rouletteWheelSelection(suspiciousness_states);
             chosenState = states(stateNum);
             %chosenTrans = transitions(randi([1,length(transitions)]));
              selectedOperator = randi([1,6]);
@@ -382,7 +398,9 @@ function [done, statesOrTransitions, stateNum, transNum]= applyGlobalMutations()
                 
         else
             %choose a transition
-            transNum = 12;%randi([1,length(transitions)]);
+            %Uncomment next if no Fault Localization data available
+            %transNum = %randi([1,length(transitions)]);
+            transNum= rouletteWheelSelection(suspiciousness_transitions);
             chosenTrans = transitions(transNum);
             %transitions(chosenTrans);
             selectedOperator = randi([1,11]);

@@ -65,7 +65,6 @@ for ii=1:NtestCases
                  
        end
    end
-   aitor = 0;
 end
 
 for ii=1:size(Ncf_states,1)
