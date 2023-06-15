@@ -127,49 +127,55 @@ while toc<timeBudget %&& ~plausiblePatchFound
         bdclose('all')
         
     end
-    
+    Archive = clearArchive(Archive);
 end
 
+function Archive = clearArchive(Archive)
+    %TODO -> Implement function
+    Archive = Archive;
 
-while numOfIterations<budget && ~plausiblePatchFound
-    numOfIterations=numOfIterations+1;
-    disp(['Total tries = ' num2str(numOfIterations)]);
-    selectedModelToMutate = randi([1 numsOfSolsInArchive]);
-    faultyModel = Archive{selectedModelToMutate}.modelName;
-    copyfile([faultyModel '.slx'], [faultyModel '_' num2str(numOfIterations) '.slx']); 
-    open_system([faultyModel '_' num2str(numOfIterations) '.slx']);
-    done = false;
-    while done == false
-        done = applyMutations();
-    end
-    
-    save_system([faultyModel '_' num2str(numOfIterations) '.slx']);
-    bdclose([faultyModel '_' num2str(numOfIterations) '.slx']);
-    
-    %bdclose(modelname)
-    try
-        [verdict,timeVerdictActive,criticalityVerdict,timeFirstFailureExhibited] = executeTestPacemaker(nonFaultyModel,[faultyModel '_' num2str(numOfIterations) ]);
-        if sum(verdict)==0
-            %plausiblePatchFound =true;
-            numsOfPlausiblePatches = numsOfPlausiblePatches+1;
-            PlausiblePatches{numsOfPlausiblePatches} = [faultyModel '_' num2str(numOfIterations)];
-            disp(['Plausible patch found! This one it is = ' [faultyModel '_' num2str(numOfIterations)]]);
-        elseif (timeVerdictActive<Archive{selectedModelToMutate}.timeVerdict || criticalityVerdict<Archive{selectedModelToMutate}.criticality || timeFirstFailureExhibited>Archive{selectedModelToMutate}.firstFailureExhibited )...
-                && ~(timeVerdictActive>Archive{selectedModelToMutate}.timeVerdict || criticalityVerdict>Archive{selectedModelToMutate}.criticality || timeFirstFailureExhibited<Archive{selectedModelToMutate}.firstFailureExhibited )
-            faultyModel = [faultyModel '_' num2str(numOfIterations)];
-            numsOfSolsInArchive = numsOfSolsInArchive+1;
-            Archive{numsOfSolsInArchive}.modelName = faultyModel;%[faultyModel '_' num2str(numOfIterations)];
-            Archive{numsOfSolsInArchive}.timeVerdict = timeVerdictActive;
-            Archive{numsOfSolsInArchive}.criticality = criticalityVerdict;
-            Archive{numsOfSolsInArchive}.firstFailureExhibited = timeFirstFailureExhibited;
-        end
-    catch
-       disp('non-compilable model'); 
-    end
-    bdclose(nonFaultyModel);
-    bdclose([faultyModel '_' num2str(numOfIterations)]);
-    bdclose('all')
 end
+
+% 
+% while numOfIterations<budget && ~plausiblePatchFound
+%     numOfIterations=numOfIterations+1;
+%     disp(['Total tries = ' num2str(numOfIterations)]);
+%     selectedModelToMutate = randi([1 numsOfSolsInArchive]);
+%     faultyModel = Archive{selectedModelToMutate}.modelName;
+%     copyfile([faultyModel '.slx'], [faultyModel '_' num2str(numOfIterations) '.slx']); 
+%     open_system([faultyModel '_' num2str(numOfIterations) '.slx']);
+%     done = false;
+%     while done == false
+%         done = applyMutations();
+%     end
+%     
+%     save_system([faultyModel '_' num2str(numOfIterations) '.slx']);
+%     bdclose([faultyModel '_' num2str(numOfIterations) '.slx']);
+%     
+%     %bdclose(modelname)
+%     try
+%         [verdict,timeVerdictActive,criticalityVerdict,timeFirstFailureExhibited] = executeTestPacemaker(nonFaultyModel,[faultyModel '_' num2str(numOfIterations) ]);
+%         if sum(verdict)==0
+%             %plausiblePatchFound =true;
+%             numsOfPlausiblePatches = numsOfPlausiblePatches+1;
+%             PlausiblePatches{numsOfPlausiblePatches} = [faultyModel '_' num2str(numOfIterations)];
+%             disp(['Plausible patch found! This one it is = ' [faultyModel '_' num2str(numOfIterations)]]);
+%         elseif (timeVerdictActive<Archive{selectedModelToMutate}.timeVerdict || criticalityVerdict<Archive{selectedModelToMutate}.criticality || timeFirstFailureExhibited>Archive{selectedModelToMutate}.firstFailureExhibited )...
+%                 && ~(timeVerdictActive>Archive{selectedModelToMutate}.timeVerdict || criticalityVerdict>Archive{selectedModelToMutate}.criticality || timeFirstFailureExhibited<Archive{selectedModelToMutate}.firstFailureExhibited )
+%             faultyModel = [faultyModel '_' num2str(numOfIterations)];
+%             numsOfSolsInArchive = numsOfSolsInArchive+1;
+%             Archive{numsOfSolsInArchive}.modelName = faultyModel;%[faultyModel '_' num2str(numOfIterations)];
+%             Archive{numsOfSolsInArchive}.timeVerdict = timeVerdictActive;
+%             Archive{numsOfSolsInArchive}.criticality = criticalityVerdict;
+%             Archive{numsOfSolsInArchive}.firstFailureExhibited = timeFirstFailureExhibited;
+%         end
+%     catch
+%        disp('non-compilable model'); 
+%     end
+%     bdclose(nonFaultyModel);
+%     bdclose([faultyModel '_' num2str(numOfIterations)]);
+%     bdclose('all')
+% end
 
 function [done]= applyLocalMutations(statesOrTransitions, stateNum, transNum)
 

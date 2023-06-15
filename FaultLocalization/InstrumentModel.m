@@ -21,9 +21,9 @@ outputs = getOutputs(rt);
 for i=1:size(transitions,1)
     tran = transitions(i);
     if contains(tran.LabelString,'}')
-        tran.LabelString = strrep(tran.LabelString,'}',[';trans = ' num2str(i) '}']);
+        tran.LabelString = strrep(tran.LabelString,'}',[';trans = ' num2str(i) ';}']);
     else
-        tran.LabelString = [tran.LabelString '{trans = ' num2str(i) '}'];
+        tran.LabelString = [tran.LabelString '{trans = ' num2str(i) ';}'];
     end
 end
 
