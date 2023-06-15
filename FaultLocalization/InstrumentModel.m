@@ -32,7 +32,7 @@ for i=1:size(states,1)
    state.LabelString = [state.LabelString ' state = ' num2str(i) ';'];
 end
 
-%TODO: add two outputs
+%Add two outputs to the stateflow
 ch = find(rt,'-isa','Stateflow.Chart');
 x = Stateflow.Data(ch);
 x.Name = 'trans';
@@ -41,6 +41,28 @@ x.Scope = 'Output';
 y = Stateflow.Data(ch);
 y.Name = 'state';
 y.Scope = 'Output';
+
+
+
+%Add to workspace blocks
+chartName = ch.Name;
+
+
+blockName1 = 'Trans';
+blockName2 = 'States';
+modelName = [modelToBeInstrumented '_instrumented'];
+
+add_block('simulink/Sinks/To Workspace', [modelName '/' blockName1]);
+add_block('simulink/Sinks/To Workspace', [modelName '/' blockName2]);
+
+add_line(modelName, [chartName, '/' num2str(size(outputs,1)+1)], 'Trans/1', 'autorouting', 'on');
+add_line(modelName, [chartName, '/' num2str(size(outputs,1)+2)], 'States/1', 'autorouting', 'on');
+
+set_param([modelName '/Trans'], 'VariableName', 'Trans');
+set_param([modelName '/States'], 'VariableName', 'States');
+
  
 save_system([modelToBeInstrumented '_instrumented.slx']);
 close_system([modelToBeInstrumented '_instrumented.slx']);
+
+
