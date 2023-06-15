@@ -70,16 +70,16 @@ end
 
 for ii=1:size(Ncf_states,1)
     if isnan((Ncf_states(ii,1)/Nf)/(Ncf_states(ii,1)/Nf+Ncs_states(ii,1)/Ns))
-        tarantula_states(ii,1) = 0;
+        suspiciousness_states(ii,1) = 0;
     else
-        tarantula_states(ii,1) = (Ncf_states(ii,1)/Nf)/(Ncf_states(ii,1)/Nf+Ncs_states(ii,1)/Ns);
+        suspiciousness_states(ii,1) = (Ncf_states(ii,1)/Nf)/(Ncf_states(ii,1)/Nf+Ncs_states(ii,1)/Ns);
     end
 end
 for ii=1:size(Ncf_transitions,1)
     if isnan((Ncf_transitions(ii,1)/Nf)/(Ncf_transitions(ii,1)/Nf+Ncs_transitions(ii,1)/Ns))
-        tarantula_transitions(ii,1) = 0;
+        suspiciousness_transitions(ii,1) = 0;
     else   
-        tarantula_transitions(ii,1) = (Ncf_transitions(ii,1)/Nf)/(Ncf_transitions(ii,1)/Nf+Ncs_transitions(ii,1)/Ns);
+        suspiciousness_transitions(ii,1) = (Ncf_transitions(ii,1)/Nf)/(Ncf_transitions(ii,1)/Nf+Ncs_transitions(ii,1)/Ns);
     end    
 end
  
