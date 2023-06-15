@@ -82,5 +82,5 @@ for ii=1:size(Ncf_transitions,1)
         tarantula_transitions(ii,1) = (Ncf_transitions(ii,1)/Nf)/(Ncf_transitions(ii,1)/Nf+Ncs_transitions(ii,1)/Ns);
     end    
 end
-
+ 
 
