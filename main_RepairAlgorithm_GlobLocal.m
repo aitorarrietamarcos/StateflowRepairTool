@@ -1,15 +1,15 @@
 clear;
 clc;
-rng(10);
+rng(2);
 addpath('Mutators');
 bdclose('all')
 
-faultyModel = 'ModelsWithRealFaults/pacemaker_fault1/Model1_Scenario2_Faulty_2020a';
-nonFaultyModel =  'ModelsWithRealFaults/pacemaker_fault1/Model1_Scenario2_NonFaulty_2020a';
-load('ModelsWithRealFaults/pacemaker_fault1/fl_data_states.mat');
-load('ModelsWithRealFaults/pacemaker_fault1/fl_data_transitions.mat');
+faultyModel = 'ModelsWithRealFaults/pacemaker_fault2/Model2_Scenario1_Faulty_2020a';
+nonFaultyModel =  'ModelsWithRealFaults/pacemaker_fault2/Model2_Scenario1_Correct_2020a';
+load('ModelsWithRealFaults/pacemaker_fault2/fl_data_states.mat');
+load('ModelsWithRealFaults/pacemaker_fault2/fl_data_transitions.mat');
 
-executeTest = @executeTestPacemaker;
+executeTest = @executeTestPacemaker2;
 
 [bestVerdict,bestTimeVerdictActive,bestCriticalityVerdict,bestTimeFirstFailureExhibited] = executeTest(faultyModel);
 bdclose(nonFaultyModel);
@@ -207,7 +207,7 @@ function [done]= applyLocalMutations(statesOrTransitions, stateNum, transNum)
             %stateNumNowComesAsInputstateNum = randi([1,length(states)]);
             chosenState = states(stateNum);
             %chosenTrans = transitions(randi([1,length(transitions)]));
-             selectedOperator = randi([1,6]);
+             selectedOperator = randi([1,8]);
             if selectedOperator==1
                 try 
                     done = deleteVariableFromState(chosenState,rt);
@@ -244,7 +244,19 @@ function [done]= applyLocalMutations(statesOrTransitions, stateNum, transNum)
                 try 
                     done = changeAssignation(chosenState);
                 catch
-                    disp('Problem when generating mutation'); % buggi tiene pinta
+                    disp('Problem when generating mutation');
+                end
+            elseif selectedOperator==7
+                try 
+                    done = replaceMathematicalOperatorInState(chosenState);
+                catch
+                    disp('Problem when generating mutation'); 
+                end
+            elseif selectedOperator==8
+                try 
+                    done = numericalReplacementOfVariableInState(chosenState,outputs(randi(randi([1,length(outputs)]))));
+                catch
+                    disp('Problem when generating mutation'); 
                 end
             end
                 
@@ -354,7 +366,7 @@ function [done, statesOrTransitions, stateNum, transNum]= applyGlobalMutations(s
             stateNum = rouletteWheelSelection(suspiciousness_states);
             chosenState = states(stateNum);
             %chosenTrans = transitions(randi([1,length(transitions)]));
-             selectedOperator = randi([1,6]);
+             selectedOperator = 8;%randi([1,8]);
             if selectedOperator==1
                 try 
                     done = deleteVariableFromState(chosenState,rt);
@@ -392,6 +404,21 @@ function [done, statesOrTransitions, stateNum, transNum]= applyGlobalMutations(s
                     done = changeAssignation(chosenState);
                 catch
                     disp('Problem when generating mutation'); % buggi tiene pinta
+                end
+            
+            elseif selectedOperator==7
+                try 
+                    done = replaceMathematicalOperatorInState(chosenState);
+                catch
+                    disp('Problem when generating mutation'); % buggi tiene pinta
+                end
+            elseif selectedOperator==8
+                try 
+                    outputs = getOutputs(rt);
+                    done = numericalReplacementOfVariableInState2(chosenState,outputs);
+                    %done = numericalReplacementOfVariableInState(chosenState,outputs(randi(randi([1,length(outputs)]))));
+                catch
+                    disp('Problem when generating mutation'); 
                 end
             end
                 
