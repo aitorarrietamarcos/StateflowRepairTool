@@ -1,6 +1,6 @@
 clear;
 clc;
-rng(1);
+rng(10);
 addpath('Mutators');
 bdclose('all')
 
@@ -9,8 +9,9 @@ nonFaultyModel =  'ModelsWithRealFaults/pacemaker_fault1/Model1_Scenario2_NonFau
 load('ModelsWithRealFaults/pacemaker_fault1/fl_data_states.mat');
 load('ModelsWithRealFaults/pacemaker_fault1/fl_data_transitions.mat');
 
+executeTest = @executeTestPacemaker;
 
-[bestVerdict,bestTimeVerdictActive,bestCriticalityVerdict,bestTimeFirstFailureExhibited] = executeTestPacemaker(nonFaultyModel,faultyModel);
+[bestVerdict,bestTimeVerdictActive,bestCriticalityVerdict,bestTimeFirstFailureExhibited] = executeTest(faultyModel);
 bdclose(nonFaultyModel);
 bdclose(faultyModel);
 
@@ -56,7 +57,7 @@ while toc<timeBudget %&& ~plausiblePatchFound
 
         %bdclose(modelname)
         try
-            [verdict,timeVerdictActive,criticalityVerdict,timeFirstFailureExhibited] = executeTestPacemaker(nonFaultyModel,[faultyModel '_' num2str(numOfIterations) ]);
+            [verdict,timeVerdictActive,criticalityVerdict,timeFirstFailureExhibited] = executeTest([faultyModel '_' num2str(numOfIterations) ]);
             if sum(verdict)==0
                 plausiblePatchFound =true;
                 numsOfPlausiblePatches = numsOfPlausiblePatches+1;
@@ -103,7 +104,7 @@ while toc<timeBudget %&& ~plausiblePatchFound
 
         %bdclose(modelname)
         try
-            [verdict,timeVerdictActive,criticalityVerdict,timeFirstFailureExhibited] = executeTestPacemaker(nonFaultyModel,[faultyModel '_' num2str(numOfIterations) ]);
+            [verdict,timeVerdictActive,criticalityVerdict,timeFirstFailureExhibited] = executeTest([faultyModel '_' num2str(numOfIterations) ]);
             if sum(verdict)==0
                 plausiblePatchFound =true;
                 numsOfPlausiblePatches = numsOfPlausiblePatches+1;

@@ -1,8 +1,9 @@
-function [verdict,timeVerdictActive,criticalityVerdict,timeFirstFailureExhibited] = executeTestPacemaker(simModelCorrect,simModelRepair)
+function [verdict,timeVerdictActive,criticalityVerdict,timeFirstFailureExhibited] = executeTestPacemaker(simModelRepair)
 
 
+    nonFaultyModel =  'ModelsWithRealFaults/pacemaker_fault1/Model1_Scenario2_NonFaulty_2020a';
     %Get data from correct one
-    sim(simModelCorrect);
+    sim(nonFaultyModel);
 
     %Get data from buggy one
     sim(simModelRepair);

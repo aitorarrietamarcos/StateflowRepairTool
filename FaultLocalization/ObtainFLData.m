@@ -3,9 +3,9 @@ clc;
 close all;
 %% Things to configure:
 
-InstrumentedModel = 'Model1_Scenario2_Faulty_2020a_instrumented.slx'; % Add here the name of the instrumented model
-executeTest = @executeTestPacemaker; % Add here the interface function for the execution of the test case.
-NtestCases = 3;
+InstrumentedModel = 'Model2_Scenario1_Faulty_2020a_instrumented.slx'; % Add here the name of the instrumented model
+executeTest = @executeTestPacemaker2; % Add here the interface function for the execution of the test case.
+NtestCases = 2;
 
 
 %% Start getting the data
@@ -45,13 +45,13 @@ for ii=1:NtestCases
              
               
           end
-       else
-          if strcmp(Verdict,'Pass') &&jj==1
-              Ns = Ns+1;
-          elseif strcmp(Verdict,'Fail')&&jj==1
-              Nf = Nf +1;
-          end
        end
+      if strcmp(Verdict,'Pass') &&jj==1
+          Ns = Ns+1;
+      elseif strcmp(Verdict,'Fail')&&jj==1
+          Nf = Nf +1;
+      end
+       
    end
    for jj=1:numOfTrans
        if sum(Trans.Data==jj)>0 %if true, it means, state jj has been triggered
