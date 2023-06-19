@@ -1,6 +1,6 @@
 clear;
 clc;
-rng(2);
+rng(3);
 addpath('Mutators');
 bdclose('all')
 
@@ -149,46 +149,6 @@ function selected_index = rouletteWheelSelection(probabilities)
     selected_index = find(cumulative_probs >= selection, 1);
 end
 
-% 
-% while numOfIterations<budget && ~plausiblePatchFound
-%     numOfIterations=numOfIterations+1;
-%     disp(['Total tries = ' num2str(numOfIterations)]);
-%     selectedModelToMutate = randi([1 numsOfSolsInArchive]);
-%     faultyModel = Archive{selectedModelToMutate}.modelName;
-%     copyfile([faultyModel '.slx'], [faultyModel '_' num2str(numOfIterations) '.slx']); 
-%     open_system([faultyModel '_' num2str(numOfIterations) '.slx']);
-%     done = false;
-%     while done == false
-%         done = applyMutations();
-%     end
-%     
-%     save_system([faultyModel '_' num2str(numOfIterations) '.slx']);
-%     bdclose([faultyModel '_' num2str(numOfIterations) '.slx']);
-%     
-%     %bdclose(modelname)
-%     try
-%         [verdict,timeVerdictActive,criticalityVerdict,timeFirstFailureExhibited] = executeTestPacemaker(nonFaultyModel,[faultyModel '_' num2str(numOfIterations) ]);
-%         if sum(verdict)==0
-%             %plausiblePatchFound =true;
-%             numsOfPlausiblePatches = numsOfPlausiblePatches+1;
-%             PlausiblePatches{numsOfPlausiblePatches} = [faultyModel '_' num2str(numOfIterations)];
-%             disp(['Plausible patch found! This one it is = ' [faultyModel '_' num2str(numOfIterations)]]);
-%         elseif (timeVerdictActive<Archive{selectedModelToMutate}.timeVerdict || criticalityVerdict<Archive{selectedModelToMutate}.criticality || timeFirstFailureExhibited>Archive{selectedModelToMutate}.firstFailureExhibited )...
-%                 && ~(timeVerdictActive>Archive{selectedModelToMutate}.timeVerdict || criticalityVerdict>Archive{selectedModelToMutate}.criticality || timeFirstFailureExhibited<Archive{selectedModelToMutate}.firstFailureExhibited )
-%             faultyModel = [faultyModel '_' num2str(numOfIterations)];
-%             numsOfSolsInArchive = numsOfSolsInArchive+1;
-%             Archive{numsOfSolsInArchive}.modelName = faultyModel;%[faultyModel '_' num2str(numOfIterations)];
-%             Archive{numsOfSolsInArchive}.timeVerdict = timeVerdictActive;
-%             Archive{numsOfSolsInArchive}.criticality = criticalityVerdict;
-%             Archive{numsOfSolsInArchive}.firstFailureExhibited = timeFirstFailureExhibited;
-%         end
-%     catch
-%        disp('non-compilable model'); 
-%     end
-%     bdclose(nonFaultyModel);
-%     bdclose([faultyModel '_' num2str(numOfIterations)]);
-%     bdclose('all')
-% end
 
 function [done]= applyLocalMutations(statesOrTransitions, stateNum, transNum)
 
@@ -254,7 +214,8 @@ function [done]= applyLocalMutations(statesOrTransitions, stateNum, transNum)
                 end
             elseif selectedOperator==8
                 try 
-                    done = numericalReplacementOfVariableInState(chosenState,outputs(randi(randi([1,length(outputs)]))));
+                    outputs = getOutputs(rt);
+                    done = numericalReplacementOfVariableInState2(chosenState,outputs);
                 catch
                     disp('Problem when generating mutation'); 
                 end
@@ -366,7 +327,7 @@ function [done, statesOrTransitions, stateNum, transNum]= applyGlobalMutations(s
             stateNum = rouletteWheelSelection(suspiciousness_states);
             chosenState = states(stateNum);
             %chosenTrans = transitions(randi([1,length(transitions)]));
-             selectedOperator = 8;%randi([1,8]);
+             selectedOperator = randi([1,8]);
             if selectedOperator==1
                 try 
                     done = deleteVariableFromState(chosenState,rt);
