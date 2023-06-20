@@ -1,15 +1,15 @@
 clear;
 clc;
-rng(3);
+rng(5);
 addpath('Mutators');
 bdclose('all')
 
-faultyModel = 'ModelsWithRealFaults/pacemaker_fault2/Model2_Scenario1_Faulty_2020a';
-nonFaultyModel =  'ModelsWithRealFaults/pacemaker_fault2/Model2_Scenario1_Correct_2020a';
-load('ModelsWithRealFaults/pacemaker_fault2/fl_data_states.mat');
-load('ModelsWithRealFaults/pacemaker_fault2/fl_data_transitions.mat');
+faultyModel = 'ModelsWithRealFaults/fridge_1/Fridge_Faulty';
+nonFaultyModel =  'ModelsWithRealFaults/fridge_1/Fridge_Correct';
+load('ModelsWithRealFaults/fridge_1/fl_data_states.mat');
+load('ModelsWithRealFaults/fridge_1/fl_data_transitions.mat');
 
-executeTest = @executeTestPacemaker2;
+executeTest = @executeTestFridge;
 
 [bestVerdict,bestTimeVerdictActive,bestCriticalityVerdict,bestTimeFirstFailureExhibited] = executeTest(faultyModel);
 bdclose(nonFaultyModel);
@@ -51,10 +51,13 @@ while toc<timeBudget %&& ~plausiblePatchFound
         while done == false
             [done, statesOrTransitions, stateNum, transNum] = applyGlobalMutations(suspiciousness_transitions,suspiciousness_states);
         end
-
-        save_system([faultyModel '_' num2str(numOfIterations) '.slx']);
+        
+        try
+            save_system([faultyModel '_' num2str(numOfIterations) '.slx']);
+        catch
+            
+        end
         bdclose([faultyModel '_' num2str(numOfIterations) '.slx']);
-
         %bdclose(modelname)
         try
             [verdict,timeVerdictActive,criticalityVerdict,timeFirstFailureExhibited] = executeTest([faultyModel '_' num2str(numOfIterations) ]);
@@ -99,7 +102,11 @@ while toc<timeBudget %&& ~plausiblePatchFound
             [done] = applyLocalMutations(statesOrTransitions, stateNum, transNum);
         end
         %
-        save_system([faultyModel '_' num2str(numOfIterations) '.slx']);
+        try
+            save_system([faultyModel '_' num2str(numOfIterations) '.slx']);
+        catch
+        end
+        
         bdclose([faultyModel '_' num2str(numOfIterations) '.slx']);
 
         %bdclose(modelname)
@@ -165,7 +172,18 @@ function [done]= applyLocalMutations(statesOrTransitions, stateNum, transNum)
         if statesOrTransitions==1
               %choose a state
             %stateNumNowComesAsInputstateNum = randi([1,length(states)]);
-            chosenState = states(stateNum);
+            try
+                if stateNum > size(states,1)
+                    done = true;
+                    break;
+                else
+                    chosenState = states(stateNum);
+                end
+            catch
+                disp('Problem when parsing states');
+                done = true;
+                break;
+            end
             %chosenTrans = transitions(randi([1,length(transitions)]));
              selectedOperator = randi([1,8]);
             if selectedOperator==1
@@ -226,7 +244,12 @@ function [done]= applyLocalMutations(statesOrTransitions, stateNum, transNum)
         else
             %choose a transition
             %transNum = 12;%randi([1,length(transitions)]);
-            chosenTrans = transitions(transNum);
+            if length(transitions) < transNum
+                chosenTrans = randi([1,length(transitions)]);
+                
+            else
+                chosenTrans = transitions(transNum);
+            end
             %transitions(chosenTrans);
             selectedOperator = randi([1,11]);
             if selectedOperator==1
@@ -324,8 +347,12 @@ function [done, statesOrTransitions, stateNum, transNum]= applyGlobalMutations(s
             %Uncomment next if you want to do it without considering Fault
             %Localization data
             %stateNum = randi([1,length(states)]);
-            stateNum = rouletteWheelSelection(suspiciousness_states);
-            chosenState = states(stateNum);
+            if length(states) == length(suspiciousness_states) 
+                stateNum = rouletteWheelSelection(suspiciousness_states);
+                chosenState = states(stateNum);
+            else
+                stateNum = randi([1,length(states)]);
+            end
             %chosenTrans = transitions(randi([1,length(transitions)]));
              selectedOperator = randi([1,8]);
             if selectedOperator==1
@@ -364,14 +391,14 @@ function [done, statesOrTransitions, stateNum, transNum]= applyGlobalMutations(s
                 try 
                     done = changeAssignation(chosenState);
                 catch
-                    disp('Problem when generating mutation'); % buggi tiene pinta
+                    disp('Problem when generating mutation');
                 end
             
             elseif selectedOperator==7
                 try 
                     done = replaceMathematicalOperatorInState(chosenState);
                 catch
-                    disp('Problem when generating mutation'); % buggi tiene pinta
+                    disp('Problem when generating mutation');
                 end
             elseif selectedOperator==8
                 try 
@@ -389,7 +416,11 @@ function [done, statesOrTransitions, stateNum, transNum]= applyGlobalMutations(s
             %choose a transition
             %Uncomment next if no Fault Localization data available
             %transNum = %randi([1,length(transitions)]);
-            transNum= rouletteWheelSelection(suspiciousness_transitions);
+            if length(transitions) == length(suspiciousness_transitions)  %added because of a weird bug.
+                transNum= rouletteWheelSelection(suspiciousness_transitions);
+            else
+                transNum = randi([1,length(transitions)]);
+            end
             chosenTrans = transitions(transNum);
             %transitions(chosenTrans);
             selectedOperator = randi([1,11]);
