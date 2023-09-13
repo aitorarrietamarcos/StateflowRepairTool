@@ -1,13 +1,13 @@
 clear;
 clc;
-rng(10);
+rng(8);
 addpath('Mutators');
 bdclose('all')
 
-faultyModel = 'ModelsWithRealFaults/fridge_3/Fridge_Faulty';
-nonFaultyModel =  'ModelsWithRealFaults/fridge_3/Fridge_Correct';
-load('ModelsWithRealFaults/fridge_3/fl_data_states.mat');
-load('ModelsWithRealFaults/fridge_3/fl_data_transitions.mat');
+faultyModel = 'ModelsWithRealFaults/fridge_1/Fridge_Faulty';
+nonFaultyModel =  'ModelsWithRealFaults/fridge_1/Fridge_Correct';
+load('ModelsWithRealFaults/fridge_1/fl_data_states.mat');
+load('ModelsWithRealFaults/fridge_1/fl_data_transitions.mat');
 
 executeTest = @executeTestFridge;
 
@@ -41,7 +41,7 @@ while toc<timeBudget %&& ~plausiblePatchFound
     
     %Global search
     verdictEnhanced = false;
-    while ~verdictEnhanced && toc<timeBudget
+    while  toc<timeBudget
         numOfIterations=numOfIterations+1;
         selectedModelToMutate = randi([1 numsOfSolsInArchive]);
         faultyModel = Archive{selectedModelToMutate}.modelName;
@@ -70,7 +70,7 @@ while toc<timeBudget %&& ~plausiblePatchFound
                     && ~(timeVerdictActive>Archive{selectedModelToMutate}.timeVerdict || criticalityVerdict>Archive{selectedModelToMutate}.criticality || timeFirstFailureExhibited<Archive{selectedModelToMutate}.firstFailureExhibited )
                 faultyModel = [faultyModel '_' num2str(numOfIterations)];
                 plausiblePatchFound = false;
-                numsOfSolsInArchive = numsOfSolsInArchive+1;
+                numsOfSolsInArchive = 1;%numsOfSolsInArchive+1;
                 Archive{numsOfSolsInArchive}.modelName = faultyModel;%[faultyModel '_' num2str(numOfIterations)];
                 Archive{numsOfSolsInArchive}.timeVerdict = timeVerdictActive;
                 Archive{numsOfSolsInArchive}.criticality = criticalityVerdict;
@@ -86,60 +86,7 @@ while toc<timeBudget %&& ~plausiblePatchFound
     end
     
     %Local search
-    numOfLocalTries = 0;
-    totalLocalTries = 30;
-    modelToPerformLocalMutations = numsOfSolsInArchive;
     
-    while numOfLocalTries<totalLocalTries && toc<timeBudget
-        numOfLocalTries = numOfLocalTries+1;
-        numOfIterations=numOfIterations+1;
-        selectedModelToMutate = modelToPerformLocalMutations; % it is the last 
-        faultyModel = Archive{modelToPerformLocalMutations}.modelName;
-        copyfile([faultyModel '.slx'], [faultyModel '_' num2str(numOfIterations) '.slx']); 
-        open_system([faultyModel '_' num2str(numOfIterations) '.slx']);
-        done = false;
-        while done == false
-            [done] = applyLocalMutations(statesOrTransitions, stateNum, transNum);
-        end
-        %
-        try
-            save_system([faultyModel '_' num2str(numOfIterations) '.slx']);
-        catch
-        end
-        
-        bdclose([faultyModel '_' num2str(numOfIterations) '.slx']);
-
-        %bdclose(modelname)
-        try
-            [verdict,timeVerdictActive,criticalityVerdict,timeFirstFailureExhibited] = executeTest([faultyModel '_' num2str(numOfIterations) ]);
-            if sum(verdict)==0
-                plausiblePatchFound =true;
-                numsOfPlausiblePatches = numsOfPlausiblePatches+1;
-                PlausiblePatches{numsOfPlausiblePatches} = [faultyModel '_' num2str(numOfIterations)];
-                disp(['Plausible patch found! This one it is = ' [faultyModel '_' num2str(numOfIterations)]]);
-            elseif (timeVerdictActive<Archive{selectedModelToMutate}.timeVerdict || criticalityVerdict<Archive{selectedModelToMutate}.criticality || timeFirstFailureExhibited>Archive{selectedModelToMutate}.firstFailureExhibited )...
-                    && ~(timeVerdictActive>Archive{selectedModelToMutate}.timeVerdict || criticalityVerdict>Archive{selectedModelToMutate}.criticality || timeFirstFailureExhibited<Archive{selectedModelToMutate}.firstFailureExhibited )
-                faultyModel = [faultyModel '_' num2str(numOfIterations)];
-                plausiblePatchFound = false;
-                numsOfSolsInArchive = numsOfSolsInArchive+1;
-                Archive{numsOfSolsInArchive}.modelName = faultyModel;%[faultyModel '_' num2str(numOfIterations)];
-                Archive{numsOfSolsInArchive}.timeVerdict = timeVerdictActive;
-                Archive{numsOfSolsInArchive}.criticality = criticalityVerdict;
-                Archive{numsOfSolsInArchive}.firstFailureExhibited = timeFirstFailureExhibited;
-                verdictEnhanced = true;
-                %restart
-                modelToPerformLocalMutations = numsOfSolsInArchive;
-                numOfLocalTries=0;
-            end
-        catch
-           disp('non-compilable model'); 
-        end
-        bdclose(nonFaultyModel);
-        bdclose([faultyModel '_' num2str(numOfIterations)]);
-        bdclose('all')
-        
-    end
-    Archive = clearArchive(Archive);
 end
 
 function Archive = clearArchive(Archive)

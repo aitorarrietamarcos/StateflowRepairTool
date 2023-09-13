@@ -3,8 +3,8 @@ clc;
 close all;
 %% Things to configure:
 
-InstrumentedModel = 'Model2_Scenario1_Faulty_2020a_instrumented.slx'; % Add here the name of the instrumented model
-executeTest = @executeTestPacemaker2; % Add here the interface function for the execution of the test case.
+InstrumentedModel = 'Fridge_Faulty_instrumented.slx'; % Add here the name of the instrumented model
+executeTest = @executeTestFridge; % Add here the interface function for the execution of the test case.
 NtestCases = 2;
 
 
