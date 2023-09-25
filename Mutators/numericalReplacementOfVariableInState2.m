@@ -18,10 +18,12 @@ function done = numericalReplacementOfVariableInState2(state,outputs)
                    numberStr =  split(stringOfVar,'=');
                    number =  str2num(numberStr(2));
                    numberSel = rand;
-                   if numberSel < 0.33
-                       newNum = 1; % I want 1/3 of the time the num to be 1
-                   elseif numberSel < 0.66
-                       newNum = 0; % I want 1/3 of the time the num to be 0
+                   if numberSel < 0.25
+                       newNum = 1; % I want 1/4 of the time the num to be 1
+                   elseif numberSel < 0.5
+                       newNum = 0; % I want 1/4 of the time the num to be 0
+                   elseif numberSel < 0.75
+                       newNum = -number;
                    else
                         newNum = randi([number-100 number+100 ]); % TODO -> polish this
                    end
