@@ -3,8 +3,8 @@ clc;
 close all;
 %% Things to configure:
 
-InstrumentedModel = 'Fridge_Faulty_instrumented.slx'; % Add here the name of the instrumented model
-executeTest = @executeTestFridge; % Add here the interface function for the execution of the test case.
+InstrumentedModel = 'Door_Model_Incorrect_instrumented.slx'; % Add here the name of the instrumented model
+executeTest = @executeTestDoor; % Add here the interface function for the execution of the test case.
 NtestCases = 2;
 
 

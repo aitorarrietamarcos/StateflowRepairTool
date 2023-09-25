@@ -1,15 +1,16 @@
 clear;
 clc;
-rng(10);
+rng(3);
 addpath('Mutators');
+addpath('ModelsWithRealFaults/door_2/')
 bdclose('all')
 
-faultyModel = 'ModelsWithRealFaults/fridge_3/Fridge_Faulty';
-nonFaultyModel =  'ModelsWithRealFaults/fridge_3/Fridge_Correct';
-load('ModelsWithRealFaults/fridge_3/fl_data_states.mat');
-load('ModelsWithRealFaults/fridge_3/fl_data_transitions.mat');
+faultyModel = 'ModelsWithRealFaults/door_2/Door_Model_Incorrect';
+nonFaultyModel =  'ModelsWithRealFaults/door_2/Door_Model_Correct';
+load('ModelsWithRealFaults/door_2/fl_data_states.mat');
+load('ModelsWithRealFaults/door_2/fl_data_transitions.mat');
 
-executeTest = @executeTestFridge;
+executeTest = @executeTestDoor;
 
 [bestVerdict,bestTimeVerdictActive,bestCriticalityVerdict,bestTimeFirstFailureExhibited] = executeTest(faultyModel);
 bdclose(nonFaultyModel);

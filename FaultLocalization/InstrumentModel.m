@@ -4,7 +4,7 @@ clc;
 close all;
 addpath functions;
 
-modelToBeInstrumented = 'Fridge_Faulty';
+modelToBeInstrumented = 'Door_Model_Incorrect';
 copyfile([modelToBeInstrumented '.slx'],[modelToBeInstrumented '_instrumented.slx']);
 
 instrumentedModel = [modelToBeInstrumented '_instrumented.slx'];
@@ -29,7 +29,11 @@ end
 
 for i=1:size(states,1)
    state = states(i);
-   state.LabelString = [state.LabelString ' state = ' num2str(i) ';'];
+   %try
+        state.LabelString = [state.LabelString ' state = ' num2str(i) ';'];
+   %catch
+       
+   %end
 end
 
 %Add two outputs to the stateflow
