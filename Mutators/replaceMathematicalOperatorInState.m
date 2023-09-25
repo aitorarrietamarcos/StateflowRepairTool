@@ -8,7 +8,7 @@ function done = replaceMathematicalOperatorInState(state)
     minusLocations = 0;
     multLocations = 0;
     divLocations = 0;
-    str = convertCharsToStrings(state.Label);
+    str = convertCharsToStrings(state.LabelString);
     if contains(str,'+') || contains(str,'-') ||...
        contains(str,'*') || contains(str,'/')
         if contains(str,'+')
@@ -41,58 +41,58 @@ function done = replaceMathematicalOperatorInState(state)
             locations = [locations  divLocations];
         end
         whichToChange = randi([1 length(locations)]);
-        if strcmp(state.Label(locations(whichToChange)),'+')
+        if strcmp(state.LabelString(locations(whichToChange)),'+')
             if rand <= 0.5
-                state.Label(locations(whichToChange)) = '-';
+                state.LabelString(locations(whichToChange)) = '-';
                 done = true;
             else
-               if rand <=0.5 && strcmp(state.Label(locations(whichToChange)+1), '0')==false
-                   state.Label(locations(whichToChange)) = '/';
+               if rand <=0.5 && strcmp(state.LabelString(locations(whichToChange)+1), '0')==false
+                   state.LabelString(locations(whichToChange)) = '/';
                    done = true;
                else
-                   state.Label(locations(whichToChange)) = '*';
+                   state.LabelString(locations(whichToChange)) = '*';
                    done = true;
                end
             end
             
-        elseif strcmp(state.Label(locations(whichToChange)),'-')
+        elseif strcmp(state.LabelString(locations(whichToChange)),'-')
             if rand <= 0.5
-                state.Label(locations(whichToChange)) = '+';
+                state.LabelString(locations(whichToChange)) = '+';
                 done = true;
             else
-               if rand <=0.5 &&  strcmp(state.Label(locations(whichToChange)+1), '0')==false
-                   state.Label(locations(whichToChange)) = '/';
+               if rand <=0.5 &&  strcmp(state.LabelString(locations(whichToChange)+1), '0')==false
+                   state.LabelString(locations(whichToChange)) = '/';
                    done = true;
                else
-                   state.Label(locations(whichToChange)) = '*';
+                   state.LabelString(locations(whichToChange)) = '*';
                    done = true;
                end
             end
             
-        elseif strcmp(state.Label(locations(whichToChange)),'*')
-            if rand <= 0.5 && strcmp(state.Label(locations(whichToChange)+1), '0')==false
-                state.Label(locations(whichToChange)) = '/';
+        elseif strcmp(state.LabelString(locations(whichToChange)),'*')
+            if rand <= 0.5 && strcmp(state.LabelString(locations(whichToChange)+1), '0')==false
+                state.LabelString(locations(whichToChange)) = '/';
                 done = true;
             else
                if rand <=0.5
-                   state.Label(locations(whichToChange)) = '+';
+                   state.LabelString(locations(whichToChange)) = '+';
                    done = true;
                else
-                   state.Label(locations(whichToChange)) = '-';
+                   state.LabelString(locations(whichToChange)) = '-';
                    done = true;
                end
             end
             
-        elseif strcmp(state.Label(locations(whichToChange)),'/')
+        elseif strcmp(state.LabelString(locations(whichToChange)),'/')
             if rand <= 0.5
-                state.Label(locations(whichToChange)) = '*';
+                state.LabelString(locations(whichToChange)) = '*';
                 done = true;
             else
                if rand <=0.5
-                   state.Label(locations(whichToChange)) = '-';
+                   state.LabelString(locations(whichToChange)) = '-';
                    done = true;
                else
-                   state.Label(locations(whichToChange)) = '+';
+                   state.LabelString(locations(whichToChange)) = '+';
                    done = true;
                end
             end

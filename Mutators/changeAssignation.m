@@ -1,48 +1,48 @@
 function done = changeAssignation(state)
     done = false;
-    if contains(state.Label,'entry:')
+    if contains(state.LabelString,'entry:')
         done = true;
         if rand <0.8
             %change entry for during
-            str = convertCharsToStrings(state.Label);
+            str = convertCharsToStrings(state.LabelString);
             newStr = strrep(str,'entry','during');
-            state.Label = newStr;
+            state.LabelString = newStr;
             
         else
            %change entry for exit--exit is less used, this is why less prob.
-           str = convertCharsToStrings(state.Label);
+           str = convertCharsToStrings(state.LabelString);
            newStr = strrep(str,'entry','exit');
-           state.Label = newStr;
+           state.LabelString = newStr;
         end
         
-    elseif contains(state.Label,'during:')
+    elseif contains(state.LabelString,'during:')
         done = true;
         if rand <0.8
             %change entry for entry
-            str = convertCharsToStrings(state.Label);
+            str = convertCharsToStrings(state.LabelString);
             newStr = strrep(str,'during','entry');
-            state.Label = newStr;
+            state.LabelString = newStr;
             
         else
            %change entry for exit--exit is less used, this is why less prob. 
-           str = convertCharsToStrings(state.Label);
+           str = convertCharsToStrings(state.LabelString);
            newStr = strrep(str,'during','exit');
-           state.Label = newStr;
+           state.LabelString = newStr;
             
         end
         
-    elseif contains(state.Label,'exit:')
+    elseif contains(state.LabelString,'exit:')
         done = true;
         if rand <=0.5
             %change exit for during
-           str = convertCharsToStrings(state.Label);
+           str = convertCharsToStrings(state.LabelString);
            newStr = strrep(str,'exit','during');
-           state.Label = newStr;
+           state.LabelString = newStr;
         else
            % change exit for entry
-           str = convertCharsToStrings(state.Label);
+           str = convertCharsToStrings(state.LabelString);
            newStr = strrep(str,'exit','entry');
-           state.Label = newStr;
+           state.LabelString = newStr;
         end
         
     end

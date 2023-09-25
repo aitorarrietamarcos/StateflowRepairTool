@@ -11,7 +11,7 @@ function done = numericalReplacementOfVariableInState2(state,outputs)
     if totalNumOfOutputs>0
         var = outputs(outs(randi(totalNumOfOutputs)));
         if checkStateContainsVariable(state,var)
-           str = split(convertCharsToStrings(state.Label),newline);
+           str = split(convertCharsToStrings(state.LabelString),newline);
            for jj=1:size(str,1)
                if contains([str{jj} ' '],var.Name)|| contains([str{jj} '='],var.Name) % can be problematic
                    stringOfVar = str(jj);
@@ -35,7 +35,7 @@ function done = numericalReplacementOfVariableInState2(state,outputs)
                for jj=1:size(str,1)
                   lab =  lab + str(jj) + newline;
                end
-               state.Label = lab;
+               state.LabelString = lab;
            end
         end
     

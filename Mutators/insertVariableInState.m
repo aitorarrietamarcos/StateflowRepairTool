@@ -1,7 +1,7 @@
 function done = insertVariableInState(state,output)
     done = false;
-    if(contains(state.Label,output.Name)==false)
-        str = convertCharsToStrings(state.Label);
+    if(contains(state.LabelString,output.Name)==false)
+        str = convertCharsToStrings(state.LabelString);
         selectVal = rand;
         if selectVal < 0.4
             str = str + newline + output.Name + '=' + num2str(0) + ';';
@@ -10,7 +10,7 @@ function done = insertVariableInState(state,output)
         else
             str = str + newline + output.Name + '=' + num2str(randi([0 50])) + ';'; % pulir esto
         end
-        state.Label = str;
+        state.LabelString = str;
         done = true;
     end
 end
