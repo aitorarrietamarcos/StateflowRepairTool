@@ -1,12 +1,12 @@
 clear;
 clc;
-rng(3);
+rng(2);
 addpath('Mutators');
 addpath('ModelsWithRealFaults/door_2/')
 bdclose('all')
 
-faultyModel = 'ModelsWithRealFaults/door_2/Door_Model_Incorrect';
-nonFaultyModel =  'ModelsWithRealFaults/door_2/Door_Model_Correct';
+faultyModel = 'ModelsWithRealFaults/door_2/Fridge_Faulty';
+nonFaultyModel =  'ModelsWithRealFaults/door_2/Fridge_Correct';
 load('ModelsWithRealFaults/door_2/fl_data_states.mat');
 load('ModelsWithRealFaults/door_2/fl_data_transitions.mat');
 

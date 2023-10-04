@@ -4,7 +4,7 @@ clc;
 close all;
 addpath functions;
 
-modelToBeInstrumented = 'Door_Model_Incorrect';
+modelToBeInstrumented = 'Model2_Scenario1_Faulty_2020a';
 copyfile([modelToBeInstrumented '.slx'],[modelToBeInstrumented '_instrumented.slx']);
 
 instrumentedModel = [modelToBeInstrumented '_instrumented.slx'];
