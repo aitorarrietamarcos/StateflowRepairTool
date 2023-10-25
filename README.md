@@ -1,61 +1,42 @@
 # StateflowRepairTool
 
+## General Information
+
 This repository is a research-purpose repository aiming at researching methods to repair stateflow models. 
 
-## Status
+## Repository Structure
+The package is structured as follows:
 
-The current status is preliminary. A set of mutation operators are being implemented in the form of Insertion (I), Replace (R) or Delete (D) actions. These are implemented inside the Miscellanous folder and encompass the following operators:
+* [__Fault Localization__](/FaultLocalization) contains the necessary scripts to measure the suspiciousness of transitions and states in a stateflow model.
+* [__Miscellanous__](/Miscellanous) TBD.
+* [__Models With real Faults__](/ModelsWithRealFaults) contains the test cases used in our evaluation. 
+* [__Mutators__](/Mutators) contains a set of mutation operators.
 
-### Relational Operator Replacement (R)
-It replaces relational operators in a transition (e.g., <= to ==)
+_Note:_ each sub-package contains further specific instructions.
 
-### Conditional Operator Replacement (R)
-It replaces conditional operators in a transitions (e.g., && to ||)
+## Usage
 
-### Mathematical Operator Replacement (R)
-It replaces mathematical operators in a transition or state (e.g., + to -)
+For the baseline algorithm run ```Replication_main_RepairAlgorithm_Baseline_v2.m``` and for the approach algorithm run ```Replication_main_RepairAlgorithm_GlobLocal_V2.m```.
+Each algorithms generates a folder inside _Results_ folder. Inside the _Results_ folder, the results are stored as follows:
 
-### Change of unit in the after (R)
-It replaces the unit in an after function in a transition (e.g., from msec to sec)
+```
+Results\{Algorithm}\{model}\{Algorothm}_seed_{number of seed}\
+```
 
-### Numerical Replacement Operator in Transition (R)
-It replaces numerical values in transition (e.g., from 5 to 1)
+_Note:_ the first time you run one of the algorithms, the folder results will be created.
 
-### Numerical Replacement Operator in State (R)
-It replaces numerical values in states (e.g., from 5 to 1)
+## Result analyzing
 
-### Transition Destination Replacement (R)
-It changes the destination state of a transition
+To compare results, run ```AnalyzeResults.py```. Remember changing properly the Initial parameters in the script (model, seeds and execution time).
 
-### Transition Root Replacement (R)
-It changes the root state of a transition
+This will generate a plot comparing The baseline algorithm against our Approach.
 
-### Initial Transition Change (R)
-It changes the initial transition from state
 
-### Action State Replacment (R) (Not implemented?)
+## Reference
 
-### Delete State (D)
-It delates a state from the stateflow chart.
+## Contact
 
-### Delete Transition (D)
-It delates a transition from the stateflow chart.
+For any related question, please contact Aitor Arrieta ([aarrieta@mondragon.edu](mailto:aarrieta@mondragon.edu)), Pablo Valle ([pablo.valle@alumni.mondragon.edu](mailto:pablo.valle@alumni.mondragon.edu)) or Shaukat Ali ([shaukat@simula.no](mailto:shaukat@simula.no)).
 
-### Delete Variable from a State (D)
-It delates a variable from a state.
 
-### Delete Condition from a Transition (D)
-It delates a condition from a transition (e.g., A==5 && B<3 -> A==5).
 
-### Insert Mathematical Operator (I)
-It inserts a mathematical operator in a state
-
-### Variable Insertion In State (I)
-It inserts a new variable in a state
-
-### Insert New Condition (I)
-It inserts a new condition in a transition (e.g., from A==5 -> A==5 && B>=8)
-
-## Current identified problems:
-
-* The mutator generates some times after(0,sec), which is non-compilable.
