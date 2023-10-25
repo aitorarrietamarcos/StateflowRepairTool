@@ -28,7 +28,7 @@ for i=1:length(faultyModels)
          addpath(strcat(folders_faulty(1), "/",folders_faulty(2)));
 
          % Make new directory
-         newFolder=strcat(folders_faulty(1), "/",folders_faulty(2),"/","Baseline_seed_",num2str(seeds(j)));
+         newFolder=strcat("Results/Baseline/",folders_faulty(2),"/","Baseline_seed_",num2str(seeds(j)));
          mkdir(newFolder);
 
          % Copy Test cases

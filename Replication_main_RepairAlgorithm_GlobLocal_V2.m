@@ -22,7 +22,7 @@ for i=1:length(faultyModels)
          addpath(strcat(folders_faulty(1), "/",folders_faulty(2)));
 
          % Make new directory
-         newFolder=strcat(folders_faulty(1), "/",folders_faulty(2),"/","Approach_seed_",num2str(j));
+         newFolder=strcat("Results/Approach/",folders_faulty(2),"/","Approach_seed_",num2str(j));
          mkdir(newFolder);
 
          % Copy Test cases

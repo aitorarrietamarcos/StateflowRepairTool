@@ -1,25 +1,25 @@
-function [verdict,timeVerdictActive,criticalityVerdict,timeFirstFailureExhibited] = executeTestFridge(model, testCase)
+function [verdict,timeVerdictActive,criticalityVerdict,timeFirstFailureExhibited] = executeTestFridge(model)
 %UNTITLED5 Summary of this function goes here
 %   Detailed explanation goes here
     
-    modelname = strrep(model,'.slx','');
-
-    open(model);
+    modelname = strcat(model,".slx");
+    open(modelname);
     signalBuilderBlock = 'Signal Builder';
     %set_param([modelname '/' signalBuilderBlock], 'GroupName', 'Group 1');
-    signalbuilder([modelname '/' signalBuilderBlock],'activegroup', testCase);
+    %signalbuilder([modelname '/' signalBuilderBlock],'activegroup', 1);
 
-    sim(model);
+    sim(modelname);
     out1 = ans.out1.data;
     out2 = ans.out2.data;
     out3 = ans.out3.data;
-    save_system(model);
-    close_system(model);
+    save_system(modelname);
+    close_system(modelname);
     
     
     open('Fridge_Correct.slx');
     
-    signalbuilder(['Fridge_Correct' '/' signalBuilderBlock],'activegroup', testCase);
+    
+    %signalbuilder(['Fridge_Correct' '/' signalBuilderBlock],'activegroup', 1);
 
     
     sim('Fridge_Correct.slx');
