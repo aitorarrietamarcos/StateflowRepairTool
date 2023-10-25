@@ -15,7 +15,7 @@ The package is structured as follows:
 _Note:_ Each sub-package contains further specific instructions.
 
 ## Usage
-
+__Matlab 2022b with Simulink and Stateflow packages is required.__ <br />
 For the baseline algorithm run ```Replication_main_RepairAlgorithm_Baseline_v2.m``` and for the approach algorithm run ```Replication_main_RepairAlgorithm_GlobLocal_V2.m```. <br />
 Each algorithm generates a folder inside the _Results_ folder and the results are stored as follows:
 
