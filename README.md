@@ -9,7 +9,7 @@ The package is structured as follows:
 
 * [__Fault Localization__](/FaultLocalization) contains the necessary scripts to measure the suspiciousness of transitions and states in a stateflow model.
 * [__Miscellanous__](/Miscellanous) TBD.
-* [__Models With real Faults__](/ModelsWithRealFaults) contains the test cases used in our evaluation. 
+* [__Models With Real Faults__](/ModelsWithRealFaults) contains the test cases used in our evaluation. 
 * [__Mutators__](/Mutators) contains a set of mutation operators.
 
 _Note:_ Each sub-package contains further specific instructions.
