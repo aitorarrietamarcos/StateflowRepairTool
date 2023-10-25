@@ -2,19 +2,19 @@ function [verdict,timeVerdictActive,criticalityVerdict,timeFirstFailureExhibited
 %UNTITLED5 Summary of this function goes here
 %   Detailed explanation goes here
     testCase = 1;
-    modelname = strrep(model,'.slx','');
+    modelname = strcat(model,".slx");
 
-    open(model);
+    open(modelname);
     signalBuilderBlock = 'Signal Builder';
     %set_param([modelname '/' signalBuilderBlock], 'GroupName', 'Group 1');
     %signalbuilder([modelname '/' signalBuilderBlock],'activegroup', testCase);
 
-    sim(model);
+    sim(modelname);
     out1 = out1.data;
 %     out2 = ans.out2.data;
 %     out3 = ans.out3.data;
-    save_system(model);
-    close_system(model);
+    save_system(modelname);
+    close_system(modelname);
     
     
     open('Door_Model_Correct.slx');
