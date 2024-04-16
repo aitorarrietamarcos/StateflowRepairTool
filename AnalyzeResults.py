@@ -12,8 +12,8 @@ from matplotlib.ticker import FormatStrFormatter
 filter_models= lambda f: f.endswith('.slx')
 ############################## INITIAL PARAMETERS ################################
 
-folder= "Results\\" # Results folder
-model="fridge_3" # Model
+folder= "..\\" # Results folder
+model="pacemaker_fault2" # Model
 seeds=[1,2,3,4,5] # Seeds
 execTime=3600 # Execution time in seconds
 
@@ -73,6 +73,9 @@ for seed in seeds:
 
 
 mean_values_baseline=np.mean(patches_baseline, axis=0)
+min_values_baseline=np.min(patches_baseline, axis=0)
+max_values_baseline=np.max(patches_baseline, axis=0)
+
 std_values_baseline=np.std(patches_baseline, axis=0)
 upperBound_baseline=mean_values_baseline+std_values_baseline
 lowerBound_baseline=mean_values_baseline-std_values_baseline
@@ -83,12 +86,22 @@ plt.fill_between(range(0,execTime), lowerBound_baseline,upperBound_baseline, alp
 
 
 mean_values_ea=np.mean(patches_ea, axis=0)
+min_values_ea=np.min(patches_ea, axis=0)
+max_values_ea=np.max(patches_ea, axis=0)
 std_values_ea=np.std(patches_ea, axis=0)
 upperBound_ea=mean_values_ea+std_values_ea
 lowerBound_ea=mean_values_ea-std_values_ea
 
 lowerBound_ea=[0 if x<0 else x for x in lowerBound_ea] 
-
+print("VALUES FOR BASELINE:\n ")
+print("Mean: "+str(mean_values_baseline[-1]))
+print("Min: "+str(min_values_baseline[-1]))
+print("Maxn: "+str(max_values_baseline[-1]))
+print("---------------------------------------------")
+print("VALUES FOR APPROACH:")
+print("Mean: "+str(mean_values_ea[-1]))
+print("Min: "+str(min_values_ea[-1]))
+print("Maxn: "+str(max_values_ea[-1]))
 plt.plot(mean_values_ea, label="FlowRepair")
 plt.fill_between(range(0,execTime), lowerBound_ea,upperBound_ea, alpha=0.3)
 
@@ -96,8 +109,8 @@ plt.xlabel("Execution time (s)",weight='bold')
 plt.ylabel("# of plausible patches",weight='bold')
 plt.title(model,weight='bold')
 plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
-
-plt.legend()
+plt.ylim((-0.1,1))
+plt.legend(loc='upper left')
 plt.savefig("Figures/"+model+".pdf", format="pdf", bbox_inches="tight")
 plt.show()
 

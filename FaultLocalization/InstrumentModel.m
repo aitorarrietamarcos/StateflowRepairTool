@@ -4,7 +4,7 @@ clc;
 close all;
 addpath functions;
 
-modelToBeInstrumented = 'Model2_Scenario1_Faulty_2020a';
+modelToBeInstrumented = 'StateMachine_Incorrect_paola';
 copyfile([modelToBeInstrumented '.slx'],[modelToBeInstrumented '_instrumented.slx']);
 
 instrumentedModel = [modelToBeInstrumented '_instrumented.slx'];
@@ -21,7 +21,7 @@ outputs = getOutputs(rt);
 for i=1:size(transitions,1)
     tran = transitions(i);
     if contains(tran.LabelString,'}')
-        tran.LabelString = strrep(tran.LabelString,'}',[';trans = ' num2str(i) ';}']);
+        tran.LabelString = strrep(tran.LabelString,'}',['trans = ' num2str(i) ';}']);
     else
         tran.LabelString = [tran.LabelString '{trans = ' num2str(i) ';}'];
     end

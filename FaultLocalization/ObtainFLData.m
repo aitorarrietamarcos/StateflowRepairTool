@@ -1,10 +1,12 @@
 clear;
 clc;
 close all;
+addpath('functions');
 %% Things to configure:
 
-InstrumentedModel = 'Model2_Scenario1_Faulty_2020a_instrumented.slx'; % Add here the name of the instrumented model
-executeTest = @executeTestPacemaker2; % Add here the interface function for the execution of the test case.
+InstrumentedModel = 'StateMachine_Incorrect_paola_instrumented.slx';
+correct_model='StateMachine_Correct.slx';   % Add here the name of the instrumented model
+executeTest = @executeTestStateMachine; % Add here the interface function for the execution of the test case.
 NtestCases = 2;
 
 
@@ -12,6 +14,7 @@ NtestCases = 2;
 
 
 open(InstrumentedModel);
+
 rt = sfroot;
 states = getStates(rt);%find(rt,'-isa','Stateflow.State'); % get all states from the stateflow model
 transitions = getTransitions(rt);%find(rt,'-isa','Stateflow.Transition');
@@ -31,9 +34,9 @@ Ncs_states = zeros(numOfStates,1);
 Nf = 0;
 Ns = 0;
 
-
+open(correct_model);
 for ii=1:NtestCases
-   [Trans States Verdict] = executeTest(InstrumentedModel,ii);
+   [Trans States Verdict] = executeTest(InstrumentedModel,correct_model,ii);
    for jj=1:numOfStates
        if sum(States.Data==jj)>0 %if true, it means, state jj has been triggered
           statesCov(jj,ii)=1; 
@@ -46,7 +49,7 @@ for ii=1:NtestCases
               
           end
        end
-      if strcmp(Verdict,'Pass') &&jj==1
+      if strcmp(Verdict,'Pass') && jj==1
           Ns = Ns+1;
       elseif strcmp(Verdict,'Fail')&&jj==1
           Nf = Nf +1;
