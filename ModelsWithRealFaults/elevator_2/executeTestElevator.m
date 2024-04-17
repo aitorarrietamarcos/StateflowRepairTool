@@ -8,9 +8,9 @@ function [verdict,timeVerdictActive,criticalityVerdict,timeFirstFailureExhibited
     modelname = strcat(model,".slx");
     open(modelname);
     open(correct_model);
-
+    model_names=split(model,'/');
     signalBuilderBlock= 'Signal Builder1';
-    signalbuilder([model '/' signalBuilderBlock],'activegroup', testCase);
+    signalbuilder([convertStringsToChars(model_names(end)) '/' signalBuilderBlock],'activegroup', testCase);
     signalbuilder([correct_model_name '/' signalBuilderBlock],'activegroup', testCase);
     
 
